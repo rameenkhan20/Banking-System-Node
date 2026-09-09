@@ -1,0 +1,30 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title" : "Banking System API",
+        "description" : "API for managing banking operations",
+        "version" : "1.0.0"
+    },
+    "paths": {
+        "/" : {
+            "get" : {
+                "summary" : "First endpoint using swagger",
+                "responses" : {
+                    "200" : {
+                        "description" : "Successful response"
+                    },
+                    "500" : {
+                        "description" : "Internal server error"
+                    }
+                },
+                "content" : {
+                    "application/json" : {
+                        "schema" : {
+                            "type" : "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
