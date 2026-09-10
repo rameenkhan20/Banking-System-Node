@@ -1,0 +1,8 @@
+{
+  "watch": ["BankingSystemNode/src/**/*.ts"],
+  "ext": "ts",
+  "exec": "npx tsx src/app.ts"
+}
+
+
+ 

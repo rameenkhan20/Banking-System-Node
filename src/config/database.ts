@@ -4,8 +4,8 @@ import { PostgresDialect } from '@sequelize/postgres';
 const sequelize = new Sequelize({
   dialect: PostgresDialect,
   database: 'BankingSystemDB',
-  user: 'rameenkhan20',
-  password: '444321',
+  user: 'admin',
+  password: 'admin',
   host: 'localhost',
   port: 5432
 });
