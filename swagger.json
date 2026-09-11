@@ -25,6 +25,78 @@
                     }
                 }
             }
-        }
-    }
+        },
+        "/user/signUp" : {
+            "post" : {
+                "summary": "Endpoint for user sign up",
+                "responses": {
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    },"201": {
+                        "description": "User created successfully"
+                    }
+                },
+                "requestBody" : {
+                    "required" : true,
+                    "content" : {
+                        "application/json" : {
+                            "schema" : {
+                                "type" : "object",
+                                "properties" : {
+                                    "username" : {
+                                        "type" : "string"
+                                    },
+                                    "email" : {
+                                        "type" : "string"
+                                    },
+                                    "password" : {
+                                        "type" : "string"
+                                    },
+                                    "confirmPassword" : {
+                                        "type" : "string"
+                                    }    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/signIn" : {
+            "post" : {
+                "summary": "Endpoint for user sign in",
+                    "responses": {
+                        "400": {
+                            "description": "Bad request"
+                        },
+                        "500": {
+                            "description": "Internal server error"
+                        },"200": {
+                            "description": "User signed in successfully"
+                        }
+                    },
+                    "requestBody" : {
+                        "required" : true,
+                        "content" : {
+                            "application/json" : {
+                                "schema" : {
+                                    "type" : "object",
+                                    "properties" : {
+                                        "email" : {
+                                            "type" : "string"
+                                        },
+                                        "password" : {
+                                            "type" : "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+            }
+        }   
+    }    
 }

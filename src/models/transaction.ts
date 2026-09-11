@@ -1,21 +1,22 @@
 import { DataTypes } from '@sequelize/core';
 import sequelize from '../config/database.ts';
+import {Account} from './account.ts';
 
-const transaction = sequelize.define("Transaction" , {
+export const Transaction = sequelize.define("Transaction" , {
     //model attributes
-    id: {
-        type: DataTypes.INTEGER,
+    id: {   //transtion ID 
+        type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false
     },
     senderAccountId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false
     },
     receiverAccountId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        type: DataTypes.UUID,
+        allowNull: true
     },
     amount: {
         type: DataTypes.DECIMAL(10, 2),
@@ -31,4 +32,9 @@ const transaction = sequelize.define("Transaction" , {
         defaultValue: DataTypes.NOW,
         allowNull: false
     }
-})
+});
+
+Account.hasMany(Transaction, {foreignKey: "senderAccountId"});
+Transaction.belongsTo(Account, {foreignKey: "senderAccountId"});
+
+console.log('Transaction model defined:', !!Transaction); // 👈 add this

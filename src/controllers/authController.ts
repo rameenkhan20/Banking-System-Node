@@ -1,5 +1,8 @@
 import {User} from "../models/user.ts";
-import {bcrypt} from "bcrypt";
+import {Request, Response} from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { env } from 'node:process';
 
 interface SignUpRequestBody {
     username: string;
@@ -8,30 +11,74 @@ interface SignUpRequestBody {
     confirmPassword: string;
 }
 
-const signUp = async (req: Request, res: Response) => {
-    const body: SignUpRequestBody = await req.json();
+interface SignInRequestBody {
+    email: string;
+    password: string;
+}
+
+export const signUp = async (req: Request, res: Response) => {
     try{
-        if(!body.username || !body.email || !body.password || !body.confirmPassword) {
-            return res.status(400).send().json({ message: 'All fields are required' });
-        }
-        
-        if(body.password !== body.confirmPassword) {
-            return res.status(400).json({ message: 'Passwords do not match' });
-        }
+    const body: SignUpRequestBody = req.body;
+    const { username, email, password, confirmPassword } = body;
 
-        if(body.password === body.confirmPassword) {
-            const hashedPassword = await bcrypt.hashSync(body.password,10);
-        }
+    if(!username || !email || !password || !confirmPassword) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+    
+    if(password !== confirmPassword) {
+        return res.status(400).json({ message: 'Passwords do not match' });
+    }
+    
+    const existingUser = await User.findOne({ where: { email: email } });
 
-        // const { username , email , password }: SignUpRequestBody = req.body;
-        
-        const newUser = await User.create({
-            // body.username,
-            // body.email,
-            // hashedPassword: body.password // In a real application, you should hash the password before storing it
+    if (existingUser) {
+    return res.status(400).json({ message: 'User already exists' });
+    }
+
+    const hashedPassword = bcrypt.hashSync(password,10);
+
+    const newUser = await User.create({
+        name: username,
+        email: email,
+        hashedPassword: hashedPassword,
+        role: "user"
+    });
+    return res.status(201).json({ message: "User registered successfully", user: newUser });
+    }
+    catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+
+export const signIn = async (req: Request , res: Response) => {
+    try{
+        const {email,  password}: SignInRequestBody = req.body;
+
+        const existingUserEmail = await User.findOne({
+            where : {
+                email: email
+            }
         });
-        return res.status(201).json({ message: "User registered successfully", user: newUser });
+        
+        const isMatch = bcrypt.compareSync(password, existingUserEmail?.getDataValue('hashedPassword') || "");
+
+        if(!existingUserEmail || !isMatch) {
+            return res.status(400).json({ message: 'Invalid email or password' });
+        }
+
+        const token = jwt.sign(
+            {
+                userId: existingUserEmail.getDataValue('id'),
+                email: existingUserEmail.getDataValue('email'),
+                role: existingUserEmail.getDataValue('role')
+            },
+            process.env.JWT_SECRET || "secretKey",
+            { expiresIn: "1h" }
+        )
+        return res.status(200).json({message: "Signed In Successfully", token: token});
+
     }catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ message: 'Internal server error' });
     }
 }
