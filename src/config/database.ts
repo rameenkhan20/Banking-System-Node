@@ -1,13 +1,17 @@
-import { Sequelize } from '@sequelize/core';
-import { PostgresDialect } from '@sequelize/postgres';
+import { Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize({
-  dialect: PostgresDialect,
-  database: 'BankingSystemDB',
-  user: 'admin',
-  password: 'admin',
+// import { Sequelize } from '@sequelize/core';
+// import { PostgresDialect } from '@sequelize/postgres';
+
+
+const sequelize: Sequelize = new Sequelize( "BankingSystemDB", "admin", "admin", {
+  dialect: 'postgres',
+  // database: 'BankingSystemDB',
+  // user: 'admin',
+  // password: 'admin',
   host: 'localhost',
-  port: 5432
+  port: 5432,
+  logging: false
 });
 
 export default sequelize;

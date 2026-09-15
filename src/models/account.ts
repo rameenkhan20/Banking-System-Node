@@ -1,34 +1,35 @@
-import { DataTypes } from '@sequelize/core';
-import sequelize from '../config/database.ts';
-import { User } from './user.ts';
+import { DataTypes, Model, Sequelize } from 'sequelize';
 
-export const Account = sequelize.define("Account" , {
-    //model attributes
-    ownerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    accountNumber: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-        allowNull: false,
-        unique: true
-    },
-    balance: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false,
-        defaultValue: 0.00
-    },
-    accountType: {
-        type: DataTypes.STRING,
-        allowNull: false
-    }
-});
+export class Account extends Model{
+    public ownerId!: number;
+    public accountNumber!: string;
+    public balance!: number;
+    public accountType!: string;
+}
 
-User.hasMany(Account, { foreignKey: 'ownerId' });
-Account.belongsTo(User, { foreignKey: 'ownerId' });
-
-console.log('Account model defined:', !!Account); // 👈 add this
-
-// export default Account;
+export function accountModel(sequelize: Sequelize){
+    Account.init({
+        ownerId: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        accountNumber: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+            primaryKey: true,
+            allowNull: false,
+            unique: true
+        },
+        balance: {
+            type: DataTypes.DECIMAL(10, 2),
+            allowNull: false,
+            defaultValue: 0.00
+        },
+        accountType: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+        },
+        {sequelize , modelName: "account"}
+    )
+}
